@@ -1,36 +1,35 @@
-import * as Yup from 'yup';
+import { Form, FormikProvider, useFormik } from 'formik';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useFormik, Form, FormikProvider } from 'formik';
+import * as Yup from 'yup';
 // material
 import {
-  Stack,
-  Checkbox,
-  TextField,
-  IconButton,
-  InputAdornment,
-  FormControlLabel,
-  styled,
   alpha,
   Button,
+  Checkbox,
+  FormControlLabel,
+  IconButton,
+  InputAdornment,
+  Stack,
+  styled,
+  TextField,
 } from '@mui/material';
 // component
-import Iconify from '../../../components/Iconify';
-import { getDomain } from '../../../services/domain';
-import { login } from '../../../services/auth';
 import Cookies from 'js-cookie';
+import Iconify from '../../../components/Iconify';
+import { login } from '../../../services/auth';
+import { getDomain } from '../../../services/domain';
 
 // ----------------------------------------------------------------------
 
 export default function LoginForm() {
+  const navigate = useNavigate();
   const ColorButton = styled(Button)(({ theme }) => ({
     backgroundColor: alpha(theme.palette.background.COFFEEBEAN[0], 1),
     '&:hover': {
       backgroundColor: alpha(theme.palette.background.CIOCCOLATO[0], 0.8),
     },
   }));
-
-  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -48,12 +47,18 @@ export default function LoginForm() {
     validationSchema: LoginSchema,
     onSubmit: (values) => {
       const { email, password } = values;
-      console.log({ values, REACT_APP_API_URL: process.env.REACT_APP_API_URL, domain: getDomain() });
+      console.log({
+        values,
+        REACT_APP_API_URL: process.env.REACT_APP_API_URL,
+        domain: getDomain(),
+      });
       login(email, password).then((res) => {
         if (res?.data?.success) {
           const token = res.data.data.token;
 
           Cookies.set('userToken', token);
+
+          navigate('/page/home');
         }
       });
     },

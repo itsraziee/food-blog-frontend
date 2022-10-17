@@ -1,11 +1,12 @@
-import * as Yup from 'yup';
+import { Form, FormikProvider, useFormik } from 'formik';
 import { useState } from 'react';
-import { useFormik, Form, FormikProvider } from 'formik';
 import { useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
 // material
-import { Stack, TextField, IconButton, InputAdornment, styled, alpha, Button } from '@mui/material';
+import { alpha, Button, IconButton, InputAdornment, Stack, styled, TextField } from '@mui/material';
 
 // component
+import axios from 'axios';
 import Iconify from '../../../components/Iconify';
 
 const ColorButton = styled(Button)(({ theme }) => ({
@@ -26,6 +27,9 @@ export default function RegisterForm() {
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
     domain: Yup.string().required('Domain is required'),
     password: Yup.string().required('Password is required'),
+    password_confirmation: Yup.string()
+      .oneOf([Yup.ref('password'), null], 'Passwords must match')
+      .required('Password Confirmation is required'),
   });
 
   const formik = useFormik({
@@ -34,14 +38,29 @@ export default function RegisterForm() {
       email: '',
       domain: '',
       password: '',
+      password_confirmation: '',
     },
     validationSchema: RegisterSchema,
     onSubmit: (initialValues) => {
       console.log(initialValues);
+      console.log(`${process.env.REACT_APP_API_PROTOCOL}${process.env.REACT_APP_API_URL}/register`);
+      axios.post(
+        `${process.env.REACT_APP_API_PROTOCOL}${process.env.REACT_APP_API_URL}/register`,
+        {
+          name: initialValues.name,
+          email: initialValues.email,
+          domain: initialValues.domain,
+          password: initialValues.password,
+          password_confirmation: initialValues.password_confirmation,
+        },
+        {
+          headers: {
+            Accept: 'application/json',
+          },
+        }
+      );
     },
   });
-
-  
 
   const { errors, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
 
@@ -54,7 +73,7 @@ export default function RegisterForm() {
               fullWidth
               type="text"
               label="Name"
-            name="flname"
+              name="flname"
               {...getFieldProps('name')}
               error={Boolean(touched.name && errors.name)}
               helperText={touched.name && errors.name}
@@ -64,7 +83,7 @@ export default function RegisterForm() {
             fullWidth
             type="text"
             label="Domain"
-          name="udomain"
+            name="udomain"
             {...getFieldProps('domain')}
             error={Boolean(touched.domain && errors.domain)}
             helperText={touched.domain && errors.domain}
@@ -85,8 +104,28 @@ export default function RegisterForm() {
             autoComplete="current-password"
             type={showPassword ? 'text' : 'password'}
             label="Password"
-          name="pass"
+            name="password"
             {...getFieldProps('password')}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
+                    <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            error={Boolean(touched.password && errors.password)}
+            helperText={touched.password && errors.password}
+          />
+
+          <TextField
+            fullWidth
+            autoComplete="current-password"
+            type={showPassword ? 'text' : 'password'}
+            label="Confirmation Password"
+            name="password_confirmation"
+            {...getFieldProps('password_confirmation')}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
