@@ -3,9 +3,22 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFormik, Form, FormikProvider } from 'formik';
 // material
-import {  Stack, Checkbox, TextField, IconButton, InputAdornment, FormControlLabel, styled, alpha, Button} from '@mui/material';
+import {
+  Stack,
+  Checkbox,
+  TextField,
+  IconButton,
+  InputAdornment,
+  FormControlLabel,
+  styled,
+  alpha,
+  Button,
+} from '@mui/material';
 // component
 import Iconify from '../../../components/Iconify';
+import { getDomain } from '../../../services/domain';
+import { login } from '../../../services/auth';
+import Cookies from 'js-cookie';
 
 // ----------------------------------------------------------------------
 
@@ -33,8 +46,16 @@ export default function LoginForm() {
       remember: true,
     },
     validationSchema: LoginSchema,
-    onSubmit: (initialValues) => {
-      console.log(initialValues);
+    onSubmit: (values) => {
+      const { email, password } = values;
+      console.log({ values, REACT_APP_API_URL: process.env.REACT_APP_API_URL, domain: getDomain() });
+      login(email, password).then((res) => {
+        if (res?.data?.success) {
+          const token = res.data.data.token;
+
+          Cookies.set('userToken', token);
+        }
+      });
     },
   });
 
@@ -85,7 +106,7 @@ export default function LoginForm() {
           />
         </Stack>
 
-        <ColorButton fullWidth size="large"  type="submit" variant="contained" loading={isSubmitting}>
+        <ColorButton fullWidth size="large" type="submit" variant="contained" loading={Boolean(isSubmitting)}>
           Login
         </ColorButton>
       </Form>
