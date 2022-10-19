@@ -6,6 +6,7 @@ import useResponsive from '../hooks/useResponsive';
 
 import DomainRedirect from '../components/DomainRedirect';
 import Logo from '../components/Logo';
+import NonAuthRequired from '../components/NonAuthRequired';
 import { LoginForm } from '../sections/auth/login';
 
 // ----------------------------------------------------------------------
@@ -59,35 +60,37 @@ export default function Login() {
 
   return (
     <Page title="Login">
-      <DomainRedirect>
-        <RootStyle>
-          <HeaderStyle>
-            <Logo />
-          </HeaderStyle>
+      <NonAuthRequired>
+        <DomainRedirect>
+          <RootStyle>
+            <HeaderStyle>
+              <Logo />
+            </HeaderStyle>
 
-          {mdUp && (
-            <SectionStyle>
-              <img src="/static/mock-images/covers/pancake.jpg" alt="login" />
-            </SectionStyle>
-          )}
+            {mdUp && (
+              <SectionStyle>
+                <img src="/static/mock-images/covers/pancake.jpg" alt="login" />
+              </SectionStyle>
+            )}
 
-          <Container maxWidth="sm">
-            <ContentStyle>
-              <Typography variant="h4" align="center" sx={{ mb: 3 }} gutterBottom>
-                Login
-              </Typography>
+            <Container maxWidth="sm">
+              <ContentStyle>
+                <Typography variant="h4" align="center" sx={{ mb: 3 }} gutterBottom>
+                  Login
+                </Typography>
 
-              <LoginForm />
-              <Typography variant="body2" align="center" sx={{ mt: 3 }}>
-                Don’t have an account?{' '}
-                <Link variant="subtitle2" component={RouterLink} to="/page/register">
-                  Register
-                </Link>
-              </Typography>
-            </ContentStyle>
-          </Container>
-        </RootStyle>
-      </DomainRedirect>
+                <LoginForm />
+                <Typography variant="body2" align="center" sx={{ mt: 3 }}>
+                  Don’t have an account?{' '}
+                  <Link variant="subtitle2" component={RouterLink} to="/page/register">
+                    Register
+                  </Link>
+                </Typography>
+              </ContentStyle>
+            </Container>
+          </RootStyle>
+        </DomainRedirect>
+      </NonAuthRequired>
     </Page>
   );
 }
