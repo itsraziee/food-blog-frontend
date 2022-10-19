@@ -1,12 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-// @mui
 import { Avatar, Box, Divider, IconButton, MenuItem, Stack, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-// components
 import Cookies from 'js-cookie';
+import { useSnackbar } from 'notistack';
+import { useEffect, useRef, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import MenuPopover from '../../components/MenuPopover';
-// mocks_
 import { getUser, logout } from '../../services/auth';
 import account from '../../_mock/account';
 
@@ -28,6 +26,7 @@ const MENU_OPTIONS = [
 export default function AccountPopover() {
   const [user, setUser] = useState();
   const anchorRef = useRef(null);
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const [open, setOpen] = useState(null);
 
@@ -109,6 +108,10 @@ export default function AccountPopover() {
             logout().then((res) => {
               Cookies.remove('userToken');
               window.location.reload();
+
+              enqueueSnackbar('Logged out successfully.', {
+                variant: 'success',
+              });
             });
           }}
           sx={{ m: 1 }}

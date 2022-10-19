@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 // component
 import Cookies from 'js-cookie';
+import { useSnackbar } from 'notistack';
 import Iconify from '../../../components/Iconify';
 import { login } from '../../../services/auth';
 import { getDomain } from '../../../services/domain';
@@ -24,6 +25,7 @@ import { getDomain } from '../../../services/domain';
 
 export default function LoginForm() {
   const navigate = useNavigate();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const ColorButton = styled(Button)(({ theme }) => ({
     backgroundColor: alpha(theme.palette.background.COFFEEBEAN[0], 1),
     '&:hover': {
@@ -52,13 +54,21 @@ export default function LoginForm() {
         REACT_APP_API_URL: process.env.REACT_APP_API_URL,
         domain: getDomain(),
       });
-      login(email, password).then((res) => {
+      return login(email, password).then((res) => {
+        console.log({ res });
         if (res?.data?.success) {
           const { token } = res.data.data;
 
           Cookies.set('userToken', token);
 
+          enqueueSnackbar('Welcome!', {
+            variant: 'success',
+          });
           navigate('/page/home');
+        } else {
+          enqueueSnackbar(res.data.errorMessage, {
+            variant: 'error',
+          });
         }
       });
     },
@@ -111,7 +121,14 @@ export default function LoginForm() {
           />
         </Stack>
 
-        <ColorButton fullWidth size="large" type="submit" variant="contained" loading={Boolean(isSubmitting)}>
+        <ColorButton
+          fullWidth
+          size="large"
+          type="submit"
+          variant="contained"
+          loading={Boolean(isSubmitting)}
+          disabled={Boolean(isSubmitting)}
+        >
           Login
         </ColorButton>
       </Form>

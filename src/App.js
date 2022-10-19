@@ -1,19 +1,19 @@
-// routes
-import Router from './routes';
-// theme
-import ThemeProvider from './theme';
-// components
-import ScrollToTop from './components/ScrollToTop';
+import { SnackbarProvider } from 'notistack';
 import { BaseOptionChartStyle } from './components/chart/BaseOptionChart';
+import ScrollToTop from './components/ScrollToTop';
+import Router from './routes';
+import ThemeProvider from './theme';
 
 // ----------------------------------------------------------------------
 
 export default function App() {
   return (
     <ThemeProvider>
-      <ScrollToTop />
-      <BaseOptionChartStyle />
-      <Router />
+      <SnackbarProvider anchorOrigin={{ horizontal: 'center', vertical: 'top' }}>
+        <ScrollToTop />
+        <BaseOptionChartStyle />
+        <Router />
+      </SnackbarProvider>
     </ThemeProvider>
   );
 }
