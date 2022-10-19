@@ -1,13 +1,14 @@
 import { Link as RouterLink } from 'react-router-dom';
 // @mui
+import { Card, Container, Link, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Card, Link, Container, Typography } from '@mui/material';
 // hooks
 import useResponsive from '../hooks/useResponsive';
 // components
-import Page from '../components/Page';
 import Logo from '../components/Logo';
+import Page from '../components/Page';
 // sections
+import DomainRedirect from '../components/DomainRedirect';
 import { RegisterForm } from '../sections/auth/register';
 
 // ----------------------------------------------------------------------
@@ -57,36 +58,37 @@ const ContentStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function Register() {
-
   const mdUp = useResponsive('up', 'md');
 
   return (
     <Page title="Register">
-      <RootStyle>
-        <HeaderStyle>
-          <Logo />
-        </HeaderStyle>
+      <DomainRedirect>
+        <RootStyle>
+          <HeaderStyle>
+            <Logo />
+          </HeaderStyle>
 
-        {mdUp && (
-          <SectionStyle>
-            <img src="/static/mock-images/covers/breakfast.jpg" alt="login" />
-          </SectionStyle>
-        )}
-        <Container>
-          <ContentStyle>
-            <Typography variant="h4" align="center" sx={{ mb: 3}} gutterBottom>
-              Register
-            </Typography>
-            <RegisterForm />
-            <Typography variant="body2" sx={{ mt: 3, textAlign: 'center' }}>
+          {mdUp && (
+            <SectionStyle>
+              <img src="/static/mock-images/covers/breakfast.jpg" alt="login" />
+            </SectionStyle>
+          )}
+          <Container>
+            <ContentStyle>
+              <Typography variant="h4" align="center" sx={{ mb: 3 }} gutterBottom>
+                Register
+              </Typography>
+              <RegisterForm />
+              <Typography variant="body2" sx={{ mt: 3, textAlign: 'center' }}>
                 Already have an account?{' '}
                 <Link variant="subtitle2" to="/page/login" component={RouterLink}>
                   Login
                 </Link>
               </Typography>
-          </ContentStyle>
-        </Container>
-      </RootStyle>
+            </ContentStyle>
+          </Container>
+        </RootStyle>
+      </DomainRedirect>
     </Page>
   );
 }

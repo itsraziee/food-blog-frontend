@@ -16,6 +16,8 @@ export default function DomainRedirect({ children }) {
         .then((res) => {
           if (!res.data.success && pathname === '/') {
             navigate('/page/home');
+          } else if (!res.data.success && pathname === '/page/register') {
+            navigate('/page/home');
           }
         })
         .catch((err) => {
