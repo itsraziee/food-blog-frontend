@@ -1,11 +1,13 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 // @mui
+import { Avatar, Box, Divider, IconButton, MenuItem, Stack, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton } from '@mui/material';
 // components
+import Cookies from 'js-cookie';
 import MenuPopover from '../../components/MenuPopover';
 // mocks_
+import { getUser, logout } from '../../services/auth';
 import account from '../../_mock/account';
 
 // ----------------------------------------------------------------------
@@ -19,22 +21,21 @@ const MENU_OPTIONS = [
     label: 'Blog',
     linkTo: '/Dashboard/blog',
   },
-  {
-    label: 'Login',
-    linkTo: '/page/login',
-  },
-  {
-    label: 'Register',
-    linkTo: '/page/register',
-  },
 ];
 
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
+  const [user, setUser] = useState();
   const anchorRef = useRef(null);
 
   const [open, setOpen] = useState(null);
+
+  useEffect(() => {
+    getUser().then((res) => {
+      setUser(res.data.data);
+    });
+  }, []);
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -83,10 +84,10 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {account.displayName}
+            {user?.name}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+            {user?.email}
           </Typography>
         </Box>
 
@@ -102,7 +103,16 @@ export default function AccountPopover() {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <MenuItem onClick={handleClose} sx={{ m: 1 }}>
+        <MenuItem
+          onClick={() => {
+            handleClose();
+            logout().then((res) => {
+              Cookies.remove('userToken');
+              window.location.reload();
+            });
+          }}
+          sx={{ m: 1 }}
+        >
           Logout
         </MenuItem>
       </MenuPopover>
