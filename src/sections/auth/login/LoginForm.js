@@ -121,14 +121,7 @@ export default function LoginForm() {
           />
         </Stack>
 
-        <ColorButton
-          fullWidth
-          size="large"
-          type="submit"
-          variant="contained"
-          loading={Boolean(isSubmitting)}
-          disabled={Boolean(isSubmitting)}
-        >
+        <ColorButton fullWidth size="large" type="submit" variant="contained" disabled={Boolean(isSubmitting)}>
           Login
         </ColorButton>
       </Form>
