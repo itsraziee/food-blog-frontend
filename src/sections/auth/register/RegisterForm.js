@@ -6,8 +6,8 @@ import * as Yup from 'yup';
 import { alpha, Button, IconButton, InputAdornment, Stack, styled, TextField } from '@mui/material';
 
 // component
-import axios from 'axios';
 import Iconify from '../../../components/Iconify';
+import { register } from '../../../services/auth';
 
 const ColorButton = styled(Button)(({ theme }) => ({
   backgroundColor: alpha(theme.palette.background.COFFEEBEAN[0], 1),
@@ -44,21 +44,13 @@ export default function RegisterForm() {
     onSubmit: (initialValues) => {
       console.log(initialValues);
       console.log(`${process.env.REACT_APP_API_PROTOCOL}${process.env.REACT_APP_API_URL}/register`);
-      axios.post(
-        `${process.env.REACT_APP_API_PROTOCOL}${process.env.REACT_APP_API_URL}/register`,
-        {
-          name: initialValues.name,
-          email: initialValues.email,
-          domain: initialValues.domain,
-          password: initialValues.password,
-          password_confirmation: initialValues.password_confirmation,
-        },
-        {
-          headers: {
-            Accept: 'application/json',
-          },
-        }
-      );
+
+      // eslint-disable-next-line camelcase
+      const { name, email, domain, password, password_confirmation } = initialValues;
+      register(name, email, domain, password, password_confirmation).then((res) => {
+        document.location = `${process.env.REACT_APP_API_PROTOCOL}${initialValues.domain}.${process.env.REACT_APP_HOST_URL}/page/home`;
+        return Promise.resolve(res);
+      });
     },
   });
 
