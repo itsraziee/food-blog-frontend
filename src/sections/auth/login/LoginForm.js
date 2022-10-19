@@ -54,7 +54,7 @@ export default function LoginForm() {
       });
       login(email, password).then((res) => {
         if (res?.data?.success) {
-          const token = res.data.data.token;
+          const { token } = res.data.data;
 
           Cookies.set('userToken', token);
 

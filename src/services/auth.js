@@ -10,3 +10,23 @@ export function login(email, password) {
     { Accept: 'application/json' }
   );
 }
+
+// eslint-disable-next-line camelcase
+export function register(name, email, domain, password, password_confirmation) {
+  return axios.post(
+    `${process.env.REACT_APP_API_PROTOCOL}${process.env.REACT_APP_API_URL}/register`,
+    {
+      name,
+      email,
+      domain,
+      password,
+      // eslint-disable-next-line camelcase
+      password_confirmation,
+    },
+    {
+      headers: {
+        Accept: 'application/json',
+      },
+    }
+  );
+}
